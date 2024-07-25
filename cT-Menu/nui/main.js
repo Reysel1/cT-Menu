@@ -83,17 +83,14 @@ new Vue({
     getIdByItem(item) {
      
       if (item.blocked && item.description) {
-        console.log('block and desc')
         return 'blockItemDesc'
       }
 
       if (item.blocked) {
-        console.log('no desc')
         return 'blockItem'
       }
 
       if (item.description) {
-        console.log('no block')
         return 'itemDesc'
       }
 
