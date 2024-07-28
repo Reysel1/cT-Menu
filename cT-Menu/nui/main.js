@@ -83,14 +83,17 @@ new Vue({
     getIdByItem(item) {
      
       if (item.blocked && item.description) {
+        console.log('block and desc')
         return 'blockItemDesc'
       }
 
       if (item.blocked) {
+        console.log('no desc')
         return 'blockItem'
       }
 
       if (item.description) {
+        console.log('no block')
         return 'itemDesc'
       }
 
@@ -103,6 +106,10 @@ new Vue({
 
       if (action.blocked) {
         return this.Notify('This item is blocked', 'error');
+      }
+
+      if (action.closeClick) { 
+        this.closeMenu();
       }
 
       this.postURL('menuAction', action);
