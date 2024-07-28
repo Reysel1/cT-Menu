@@ -13,23 +13,24 @@ local function MatchFunctionReference(reference)
     return nil
 end
 
-function createContextMenu(data) 
+function createContextMenu(data, callback) 
     SetNuiFocus(true, true)
-    sendNui('createMenu', data)
+    sendNui('createMenu', data, function(cb)
+        callback(cb)
+    end)
     MENUS[#MENUS+1] = data
 end
 
-function sendNui(action, data)
+function sendNui(action, data, callback)
     SendNUIMessage({
         action = action,
         menuData = data
     })
+    RegisterNUICallback('menuClose', function(data, cb)
+        SetNuiFocus(false, false)
+        callback('close')
+    end)
 end
-
-RegisterNUICallback('menuClose', function(data, cb)
-    SetNuiFocus(false, false)
-    cb('ok')
-end)
 
 RegisterNUICallback('notify', function(data, cb)
     Notify(data.menuData.text, data.menuData.type)
@@ -55,6 +56,7 @@ RegisterNUICallback('menuAction', function(data, cb)
     if menuData.handler then
         local func = MatchFunctionReference(menuData.handler.__cfx_functionReference)
         if func then
+            Wait(100)
             func()    
         end
     end
