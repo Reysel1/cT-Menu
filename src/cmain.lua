@@ -16,7 +16,9 @@ end
 function createContextMenu(data, callback) 
     SetNuiFocus(true, true)
     sendNui('createMenu', data, function(cb)
-        callback(cb)
+        if callback then
+            callback(cb)
+        end
     end)
     MENUS[#MENUS+1] = data
 end
@@ -32,25 +34,6 @@ function sendNui(action, data, callback)
     end)
 end
 
-RegisterNUICallback('notify', function(data, cb)
-    Notify(data.menuData.text, data.menuData.type)
-    cb('ok')
-end)
-
-function Notify(text, type)
-    local types = {
-        success = {color = "success", icon = "CHAR_SOCIAL_CLUB"},
-        error = {color = "error", icon = "CHAR_BLOCKED"},
-        info = {color = "info", icon = "CHAR_DEFAULT"}
-    }
-    local notifyType = types[type] or types["info"]
-    SetNotificationTextEntry("STRING")
-    AddTextComponentString(text)
-    SetNotificationMessage(notifyType.icon, notifyType.icon, false, 4, "Notify", "cT-Menu")
-    DrawNotification(false, true)
-end
-
-
 RegisterNUICallback('menuAction', function(data, cb)
     local menuData = data.menuData.params
     if menuData.handler then
@@ -62,6 +45,5 @@ RegisterNUICallback('menuAction', function(data, cb)
     end
     cb('ok')
 end)
-
 
 exports('createContextMenu', createContextMenu)

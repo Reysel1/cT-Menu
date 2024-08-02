@@ -1,7 +1,7 @@
 Vue.component('animated-icon', {
   props: ['iconName'],
   template: `
-    <lord-icon  :src="iconSrc" trigger="loop" delay="750" colors="primary:#bbbbbb"></lord-icon>
+    <lord-icon :src="iconSrc" trigger="loop" delay="750" colors="primary:#c6c6c6"></lord-icon>
   `,
   computed: {
     iconSrc() {
@@ -25,7 +25,7 @@ Vue.component('font-awesome-icon', {
 Vue.component('image-icon', {
   props: ['iconName'],
   template: `
-    <img v-if="iconName"  :src="iconSrc"/>
+    <img draggable="false" v-if="iconName"  :src="iconSrc"/>
   `,
   computed: {
     iconSrc() {
@@ -81,33 +81,20 @@ new Vue({
     },
 
     getIdByItem(item) {
-     
       if (item.blocked && item.description) {
-        console.log('block and desc')
-        return 'blockItemDesc'
+        return 'blocked'
       }
 
       if (item.blocked) {
-        console.log('no desc')
         return 'blockItem'
       }
 
       if (item.description) {
-        console.log('no block')
         return 'itemDesc'
       }
-
-
-
-
     },
 
     doAction(action) {
-
-      if (action.blocked) {
-        return this.Notify('This item is blocked', 'error');
-      }
-
       if (action.closeClick) { 
         this.closeMenu();
       }
@@ -117,17 +104,16 @@ new Vue({
     
     postURL(url, data) {
       $.post(`https://cT-Menu/${url}`, JSON.stringify({menuData: data}), (response) => {
-        console.log(response);
+        // console.log(response);
       });
     },
 
-    Notify(text, type) {
-
-      this.postURL('notify', {text: text, type: type});
-
-    },
-
     closeMenu() {
+      var close = new Audio('https://r2.fivemanage.com/QbMW9SvJrh8gWirlVt5Ee/movement-swipe-whoosh-4-186578.mp3');
+      close.volume = .085;
+      close.currentTime = 0;
+      close.play();
+
       this.isMenuOpen = false;
       this.CurrentMenu = [];
       this.titleData = {};
@@ -135,10 +121,22 @@ new Vue({
     }
   },
   mounted() {
+    var swipe = new Audio('https://r2.fivemanage.com/QbMW9SvJrh8gWirlVt5Ee/infographic-swipe-1-184021.mp3');
+    var click = new Audio('https://r2.fivemanage.com/QbMW9SvJrh8gWirlVt5Ee/click.mp3');
+    var hover = new Audio('https://r2.fivemanage.com/QbMW9SvJrh8gWirlVt5Ee/hover.mp3');
+    swipe.volume = .085;
+    click.volume = .2;
+    hover.volume = .7;
+
+    $(document).on('click', '.menuItem', function() {click.currentTime = 0; click.play()});
+    $(document).on('mouseenter', '.menuItem', function() {hover.currentTime = 0; hover.play()});
+    
     window.addEventListener('message', (event) => {
       const { action, menuData } = event.data;
       if (action === 'createMenu') {
         this.setMenuData(menuData);
+        swipe.currentTime = 0;
+        swipe.play();
       } else if (action === 'closeMenu') {
         this.closeMenu();
       }
