@@ -14,7 +14,7 @@
     <div class="back" id="app">
         <transition name="fade">
             <div class="mainMenu" v-if="isMenuOpen">
-            <div class="menuTitle" v-html="titleData.menuTitle"></div> <!-- Aplica v-html aquí si titleData.menuTitle contiene HTML -->
+            <div class="menuTitle" v-html="titleData.menuTitle"></div>
             <div class="menuItems"> 
                 <div v-for="(item, index) in CurrentMenu" :key="index" :id="getIdByItem(item)" class="menuItem" @click="doAction(item)" >
                 <component :is="getIconComponent(item)" v-bind="getIconProps(item)"></component>
